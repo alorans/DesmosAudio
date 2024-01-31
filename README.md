@@ -14,9 +14,9 @@ A simple Python program to turn an audio file into a series of Desmos expression
 
 ## Requirements
 
-- `pip install scipy`
-- `pip install numpy`
-- `pip install pydub`
+```shell
+pip install -r requirements.txt
+```
 
 To load audio files that are not in uncompressed .wav format, you also need `ffmpeg` or `libav`, which PyDub uses internally.
 To install these libraries, please follow these directions at the [PyDub Documentation](https://github.com/jiaaro/pydub?tab=readme-ov-file#getting-ffmpeg-set-up).
