@@ -1,8 +1,8 @@
 from pydub import AudioSegment
 import numpy as np
-import scipy.fftpack
-import wave
+import pyperclip
 import io
+import wave
 
 
 def load_audio(
@@ -39,10 +39,10 @@ def process_audio_chunk(
     data = np.frombuffer(data, dtype=np.int16)
 
     # Perform the fourier transform on the chunk
-    fft = np.abs(scipy.fftpack.fft(data))
+    fft = np.abs(np.fft.fft(data))
 
     # Get the frequencies corresponding to the FFT values
-    freqs = scipy.fftpack.fftfreq(len(fft), 1.0 / sample_rate)
+    freqs = np.fft.fftfreq(len(fft), 1.0 / sample_rate)
 
     # Combine the frequencies and FFT values into a list of tuples
     chunk = list(zip(freqs, fft))
@@ -53,7 +53,7 @@ def process_audio_chunk(
 
     # Filter out frequencies/amplitudes above the thresholds
     chunk = [[offset * int(item[0]), round(2 ** (item[1] / vol_multiplier) - 1, 2)] for item in chunk
-             if min_freq_threshold / offset <= item[0] < offset * max_freq_threshold / offset]
+             if min_freq_threshold / offset <= item[0] < max_freq_threshold / offset]
 
     # Sort the chunk to find the most prominent frequencies
     chunk.sort(key=lambda x: x[1], reverse=True)
@@ -62,10 +62,11 @@ def process_audio_chunk(
     return chunk
 
 
-def write_output_to_file(
+def write_output(
         chunks: list,
         max_frequencies: int,
-        output_file: str
+        output_file: str,
+        clipboard: bool
 ):
     # Format into channels
     channels = [[[], []] for _ in range(max_frequencies)]
@@ -73,19 +74,25 @@ def write_output_to_file(
         for i, freq in enumerate(chunk):
             channels[i][0].append(freq[0])
             channels[i][1].append(freq[1])
+    # Format as Desmos expressions
+    expressions = []
+    for i, channel in enumerate(channels):
+        if not channel[0]:
+            break
+        expressions.append(r"\operatorname{tone}" + f"({channel[0]}[t], {channel[1]}[t]v)")
+    copyable = "\n".join(expressions)
     # Open file
-    with open(output_file, 'w') as f:
-        for i, channel in enumerate(channels):
-            if not channel[0]:
-                break
-            # Format as a Desmos expression
-            exp = r"\operatorname{tone}" + f"({channel[0]}[t], {channel[1]}[t]v)"
-            f.write(exp + "\n")
+    if clipboard:
+        pyperclip.copy(copyable)
+    if output_file:
+        with open(output_file, 'w') as f:
+            f.write(copyable)
 
 
 def audio_to_desmos(
         audio_file: str,
-        output_file: str,
+        output_file: str = None,
+        clipboard: bool = False,
         start_seconds: float = 0,
         end_seconds: float = 1,
         read_all: bool = False,
@@ -95,6 +102,10 @@ def audio_to_desmos(
         max_freq_threshold: int = 20000,
         offset_octaves: int = 1
 ):
+    # Warn if no output method
+    if not output_file and not clipboard:
+        print("Warning -- No output method specified")
+
     # Load the audio to a wav format
     wav_file = load_audio(audio_file)
 
@@ -125,11 +136,12 @@ def audio_to_desmos(
         # Append the chunk to the list of chunks
         chunks.append(chunk)
 
-    # Write to output file
-    write_output_to_file(
+    # Write to output
+    write_output(
         chunks,
         max_frequencies,
-        output_file)
+        output_file,
+        clipboard)
 
     # Print Desmos user settings
     print(f"Length:\t{len(chunks) + 1}")

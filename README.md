@@ -14,6 +14,11 @@ A simple Python program to turn an audio file into a series of Desmos expression
 
 ## Requirements
 
+**Dependencies:**
+- NumPy (>=1.25.2)
+- PyDub (>=0.25.1)
+- Pyperclip (>=1.8.2)
+
 ```shell
 pip install -r requirements.txt
 ```
@@ -37,7 +42,7 @@ git clone --depth 1 --branch master https://github.com/alorans/DesmosAudio.git
 2. Splits the waveform into "chunks", by default each lasting 1/30 of a second.
 3. Performs a Fast Fourier Transform (FFT) on each chunk, extracting the pure frequency components of the chunk, and their amplitudes.
 4. Selects, by default, the 250 most prominent frequencies.
-5. Formats the data as a copyable Desmos expression, and outputs to a file.
+5. Formats the data as a copyable Desmos expression, and outputs to a file or directly to the system clipboard.
 
 ## Usage
 
@@ -50,6 +55,7 @@ if __name__ == "__main__":
     audio_to_desmos(
         audio_file="<your_path>.mp3",
         output_file="output.txt",
+        clipboard=True,
         start_seconds=0,
         end_seconds=20,
     )
@@ -61,9 +67,11 @@ if __name__ == "__main__":
   - The input audio filepath
   - Must be .wav, unless ffmpeg is installed, in which case
   - Can be in any format supported by ffmpeg
-- `output_file: str`
+- `output_file: str = None`
   - The path to the output text file
   - .txt recommended extension
+- `clipboard: bool = False`
+  - Weather or not to output the result to the system clipboard
 - `start_seconds: float = 0`
   - The beginning of the audio range to convert
 - `end_seconds: float = 1`
@@ -89,7 +97,7 @@ if __name__ == "__main__":
 **After converting the audio:**
 
 - Create a copy of this [graph](https://www.desmos.com/calculator/qwm6rncmry).
-- Select all and copy the contents of the output file.
+- Copy the contents of the output file, or use the clipboard option to automatically do this.
 - Paste the contents into the `Music` folder of the graph. It will be difficult to delete all the expressions if they are not in a common folder. Know that this may take a moment.
 - Note the values printed by the program for `Length` and `FPS`. Enter these into the fields with the same name under `User Settings` in Desmos.
 - Ensure that the graph is unmuted and click the arrow next to `Play` to hear your audio clip.
@@ -97,7 +105,7 @@ if __name__ == "__main__":
 
 ## Limitations
 
-While Desmos is an extremely powerful tool, keep in mind that it is not intended for playing audio tracks. Certain limitations do arrise:
+While Desmos is an extremely powerful tool, keep in mind that it is not intended for playing audio tracks. Certain limitations do arise:
 
 - More than 25-30 seconds at 30 sample rate results in choppy audio.
 - 250 frequency channels is usually more than enough, and much more can also cause choppy audio.
@@ -114,7 +122,7 @@ While Desmos is an extremely powerful tool, keep in mind that it is not intended
 
 ## Contributing
 
-Contributions would also be greatly appreciated. This program was written very quickly and not robustly tested, so any and all help is welcome. Please feel free to use and expand on this program in any way you like.
+Contributions would also be greatly appreciated. This program was written quickly and not robustly tested, so any and all help is welcome. Please feel free to use and expand on this program in any way you like.
 
 You can contribute by
 - Filing an issue/feature request
