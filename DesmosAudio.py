@@ -39,10 +39,10 @@ def process_audio_chunk(
     data = np.frombuffer(data, dtype=np.int16)
 
     # Perform the fourier transform on the chunk
-    fft = np.abs(np.fft.fft(data))
+    fft = list(map(float, np.abs(np.fft.fft(data))))
 
     # Get the frequencies corresponding to the FFT values
-    freqs = np.fft.fftfreq(len(fft), 1.0 / sample_rate)
+    freqs = list(map(float, np.fft.fftfreq(len(fft), 1.0 / sample_rate)))
 
     # Combine the frequencies and FFT values into a list of tuples
     chunk = list(zip(freqs, fft))
