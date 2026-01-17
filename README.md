@@ -114,7 +114,7 @@ While Desmos is an extremely powerful tool, keep in mind that it is not intended
 - When set to a low sample rate, such as 10-15 times per second, high-pitched artifacts often appear.
 - Occasionally, the program does not pick up on soft baselines and lower-pitched tones.
 
-- The reason for the *offset_octaves* parameter being necessary could be considered a limitation. I fear it is something wrong with my code...
+- The reason for the *offset_octaves* parameter being necessary could be considered a limitation. It might be something wrong with my code...
 
 **Keep in mind**
 
@@ -123,12 +123,6 @@ While Desmos is an extremely powerful tool, keep in mind that it is not intended
 ## Contributing
 
 Contributions would also be greatly appreciated. This program was written quickly and not robustly tested, so any and all help is welcome. Please feel free to use and expand on this program in any way you like.
-
-You can contribute by
-- Filing an issue/feature request
-- Making a pull request
-
-I may also add discussions in the repository at some point.
 
 **Please do not use this in the Desmos Math Art Contest, to preserve the integrity of the competition.** 
 
